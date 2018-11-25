@@ -1,0 +1,51 @@
+---
+- hosts: uninitialized
+  remote_user: root
+
+  tasks:
+
+  - name: Update apt repositories cache
+    apt:
+      update_cache: yes
+
+  - name: Install updates of all currently installed packages
+    apt:
+      name: "*"
+      state: latest
+      force_apt_get: yes
+    
+  - name: Install common packages
+    apt:
+      name: "{{ packages }}"
+      state: present
+      force_apt_get: yes
+    vars:
+      packages:
+      - ufw
+      - htop
+      - nano
+      - sudo
+      - git
+
+  - name: Allow SSH connections with rate limiting in firewall
+    ufw:
+      rule: limit
+      name: ssh
+
+  - name: Enable firewall and deny connections by default
+    ufw:
+      state: enabled
+      policy: deny
+
+  - name: Import user data
+    include_vars: 
+      file: ./vars/users.yml
+      name: users
+
+  - name: Create superusers
+    user:
+      name: "{{ item.name }}"
+      shell: "{{ item.shell }}"
+      groups: sudo
+      append: yes
+    with_items: "{{ users.administrators }}"
