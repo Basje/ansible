@@ -1,0 +1,6 @@
+# Ignore all dot files and dot directories.
+.*
+
+# Whitelist some dot files that should be in the repository.
+!.editorconfig
+!.gitignore
