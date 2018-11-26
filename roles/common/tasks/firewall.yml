@@ -1,0 +1,11 @@
+---
+
+- name: Allow SSH connections with rate limiting in firewall
+  ufw:
+    rule: limit
+    name: ssh
+
+- name: Enable firewall and deny connections by default
+  ufw:
+    state: enabled
+    policy: deny
