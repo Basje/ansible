@@ -1,0 +1,14 @@
+---
+
+- name: Import user data
+  include_vars:
+    file: ./vars/users.yml
+    name: users
+
+- name: Create superusers
+  user:
+    name: "{{ item.name }}"
+    shell: "{{ item.shell }}"
+    groups: sudo
+    append: yes
+  with_items: "{{ users.administrators }}"
